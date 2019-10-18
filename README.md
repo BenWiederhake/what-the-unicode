@@ -37,7 +37,7 @@ TODO
 
 Next up are these:
 * Check whether `READ_INCREMENT` fulfills its purpose, or should be 1, or should be 16 MiB, or whatever.
-* Check entire tree.
+* Check entire directory tree. (Or maybe not?)
 * Ship with a "custom" download of unicodedata, thus having two backends.
 * Tests?
   * handwritten

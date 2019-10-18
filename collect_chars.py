@@ -71,6 +71,24 @@ class CodepointSet:
         return result
 
 
+def make_displayable(char):
+    # I feel dirty for writing this function.
+
+    # This 'fixes' surrogates like \ud800:
+    char = char.encode(errors='replace').decode()
+
+    # Disallow the usual control characters:
+    if ord(char) < 0x20:
+        char = '?'
+
+    # Disallow the *other* control characters (?!):
+    if 0x80 <= ord(char) < 0xa0:
+        char = '?'
+
+    # Let's hope we're done:
+    return char
+
+
 def print_analysis(sorted_analysis, template=None):
     if template is None:
         template = DEFAULT_TEMPLATE
@@ -82,8 +100,7 @@ def print_analysis(sorted_analysis, template=None):
             print()
         print('Category "{}":'.format(category_name))
         for cp_value, cp_name in category_content:
-            cp_display = cp_value.encode(errors='replace').decode()  # I feel dirty.  This is for surrogates like \ud800.
-            print(template.format(name=cp_name, codepoint=cp_display, codepoint_ord=ord(cp_value)))
+            print(template.format(name=cp_name, codepoint=make_displayable(cp_value), codepoint_ord=ord(cp_value)))
 
 
 def analyze_file(filename, encoding=None, errors=None):  # `errors='ignore'` to ignore unreadable unicode chars.
@@ -97,8 +114,7 @@ def show_universe():
     be = ModuleBackend()
     for i in range(0x110000):
         chr_i = chr(i)
-        cp_display = chr_i.encode(errors='replace').decode()  # I feel dirty.  This is for surrogates like \ud800.
-        print(DEFAULT_TEMPLATE.format(name=be.get_name(chr_i), codepoint=cp_display, codepoint_ord=ord(chr_i)))
+        print(DEFAULT_TEMPLATE.format(name=be.get_name(chr_i), codepoint=make_displayable(chr_i), codepoint_ord=ord(chr_i)))
 
 
 def run(argv):
