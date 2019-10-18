@@ -93,6 +93,8 @@ def print_analysis(sorted_analysis, template=None):
     if template is None:
         template = DEFAULT_TEMPLATE
     first_category = True
+    uses_bit7 = False
+    uses_unclean = False
     for category_name, category_content in sorted_analysis:
         if first_category:
             first_category = False
@@ -100,7 +102,27 @@ def print_analysis(sorted_analysis, template=None):
             print()
         print('Category "{}":'.format(category_name))
         for cp_value, cp_name in category_content:
-            print(template.format(name=cp_name, codepoint=make_displayable(cp_value), codepoint_ord=ord(cp_value)))
+            if ord(cp_value) >= 0x80:
+                uses_bit7 = True
+            cp_display = make_displayable(cp_value)
+            if cp_display != cp_value and cp_value not in '\r\n':
+                uses_unclean = True
+            print(template.format(name=cp_name, codepoint=cp_display, codepoint_ord=ord(cp_value)))
+
+    if uses_bit7:
+        if first_category:
+            first_category = False
+        else:
+            print()
+        print('Some of the characters used bit 7, i.e., need bytes between 0x80 and 0xff.')
+
+    if uses_unclean:
+        if first_category:
+            first_category = False
+        else:
+            print()
+        print('Some of the characters could not be displayed as-is.')
+        print('This indicates control characters (0x00-0x1f and 0x80-0x9f) or surrogates.')
 
 
 def analyze_file(filename, encoding=None, errors=None):  # `errors='ignore'` to ignore unreadable unicode chars.
