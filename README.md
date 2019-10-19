@@ -11,7 +11,7 @@ It uses the built-in module [`unicodedata`](https://docs.python.org/3/library/un
 which has a hardcoded copy of the data in [the official files](ftp://ftp.unicode.org/Public/).
 You can check which version got compiled into your version of python by running `python3 -c 'import unicodedata as ucd; print(ucd.unidata_version)'`.
 
-This tool was inspired by [someone's]() [favorite commit message](), or rather the underlying bug: a non-breaking space (`U+00A0`) in a ASCII-only document.
+This tool was inspired by [someone's](https://www.reddit.com/r/programming/comments/djnp8k/my_favourite_git_commit/) [favorite commit message](https://fatbusinessman.com/2019/my-favourite-git-commit), or rather the underlying bug: a non-breaking space (`U+00A0`) in a ASCII-only document.
 On the broken version, the output of `collect_chars.py` ends in:
 
     Category "Zs":
